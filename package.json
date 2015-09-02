@@ -1,0 +1,8 @@
+{
+  "name": "feedMind",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "koa": "^1.0.0"
+  }
+}
