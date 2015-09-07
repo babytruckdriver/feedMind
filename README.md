@@ -9,4 +9,8 @@ Installation:
 
 Execution:
 
-    $ npm start
+    $ iojs app
+    
+Test (install globally 'gulp'):
+
+    $gulp --harmony test
