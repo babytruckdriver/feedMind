@@ -1,5 +1,7 @@
 "use strict";
 
+// TODO importar y utilizar feedparser (esto mejor en api.js)
+
 var koa = require("koa");
 var router = require("koa-router");
 var mount = require("koa-mount");

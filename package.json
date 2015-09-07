@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "bson": "^0.4.11",
     "co-monk": "^1.0.0",
     "koa": "^1.0.0",
     "koa-better-ratelimit": "^2.1.2",
@@ -15,8 +14,7 @@
     "monk": "^1.0.1"
   },
   "devDependencies": {
-    "mocha": "^2.3.1",
-    "should": "^7.1.0",
-    "supertest": "^1.1.0"
+    "gulp": "^3.9.0",
+    "gulp-mocha": "^2.1.3"
   }
 }
