@@ -9,13 +9,13 @@ var router = require("koa-router");
 var api = require("./api/api.js");
 
 var app = koa();
+
 var compressOpts = {
   filter: function(content_type) {
     return /text/i.test(content_type); // what things compress
   },
   threshold: 0.2 // minimum size to compress (in kb)
 }
-
 
 var routerAPIv1 = new router();
 routerAPIv1.get("/all", api.all);
@@ -26,12 +26,17 @@ routerAPIv1.get("/feed", api.feed);
 app.use(function *(next) {
   try{
     yield next;
+
+    if(this.status !== 200) {
+      this.body = {"error": "Something very wrong happens here :/ " +  this.status + " " + typeof this.status};
+    }
+
   } catch (err) {
     this.type = "json";
     this.status = err.status || 500;
-    this.body = {"error" : "The application just went bonkers, hopefully NSA has all the logs :)"};
+    this.body = {"error" : err.message};
 
-    //NOTE No sé qué hace esta instrucción. Sin ella la respuesta parece idéntica
+    //NOTE "emit" emite una señal que puede ser recogida por un manejador (handler) ".on('error',...)
     this.app.emit("error", err, this);
   }
 });
@@ -53,4 +58,4 @@ app.use(mount("/v1", routerAPIv1.middleware()));
 module.exports = app;
 
 if(!module.parent) app.listen(3000);
-console.log("ioTest is running on http://localhost:3000. Enjoy using my API.");
+console.log("**feedMind** is running on http://localhost:3000. Enjoy using my API.");

@@ -4,8 +4,8 @@
 
 var monk = require("monk");
 var wrap = require("co-monk");
-var FeedParser = require("feedparser");
-var request = require("request");
+var FeedParser = require("co-feedparser");
+var request = require("koa-request");
 
 var db = monk("localhost/mydb");
 var words = wrap(db.get("words"));
@@ -40,50 +40,34 @@ exports.single = function* () {
 };
 
 var feedsDB = {
-  tutsplus: "http://code.tutsplus.com/categories/javascript.atom"
+  tutsplus: "http://codeX.tutsplus.com/categories/javascript.atom",
+  echojs: "http://www.echojs.com/rss"
 }
 
 exports.feed = function* () {
   var feedSource = this.request.query.source
     , feed
-    , feedparser;
+    , feedparser
+    , res;
 
   if(feedSource && feedsDB[feedSource]) {
-    feed = request({"url": feedsDB[feedSource],
-                    "proxy": ""});
-    feedparser = new FeedParser();
 
-    feed.on("error", function (error) {
-      throw new Error("Error getting the feed. " + error);
-    });
-    feed.on("response", function (res) {
-      var stream = this;
-      console.log(">>>> " + res.statusCode);
-      if (res.statusCode != 200) {
-        return this.emit('error', new Error('Bad status code'));
-      }
+    try {
+      feed = yield request(feedsDB[feedSource]);
+    } catch (err){
+      console.log("*Error*> " + err.message);
+      throw err;
+    }
 
-      stream.pipe(feedparser);
-    });
-
-    feedparser.on('error', function(error) {
-      throw new Error("Error parsing the feed. " + error);
-    });
-
-    feedparser.on("readable", function() {
-      var stream = this
-        , meta = this.meta // **NOTE** the "meta" is always available in the context of the feedparser instance
-        , item
-        , res;
-
-      while (item = stream.read()) {
-        res += item;
-      }
-
-      this.body = res;
-    });
+    if(feed.statusCode === 200) {
+      console.log("Todo bien: " + feed.body.substring(0,40));
+      //TODO parsear la respuesta
+    } else {
+      console.log("*Error. statusCode*> " + feed.statusCode);
+      throw new Error("The feed you request responds with a " + feed.statusCode + " code.");
+    }
 
   } else {
-    throw new Error("I can't get a working source..")
+    throw new Error("I can't get a working source..");
   }
 };
