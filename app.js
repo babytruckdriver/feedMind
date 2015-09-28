@@ -28,7 +28,7 @@ app.use(function *(next) {
     yield next;
 
     if(this.status !== 200) {
-      this.body = {"error": "Something very wrong happens here :/ " +  this.status + " " + typeof this.status};
+      this.body = {"error": "Something very wrong happens here :/ " +  this.status};
     }
 
   } catch (err) {
