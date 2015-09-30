@@ -3,7 +3,8 @@
 var monk = require("monk");
 var wrap = require("co-monk");
 var feedParser = require("co-feedparser");
-var request = require("koa-request");
+//var request = require("koa-request");
+var request = require("request");
 var Readable = require("stream").Readable;
 
 var db = monk("localhost/mydb");
@@ -44,30 +45,43 @@ var feedsDB = {
 }
 
 exports.feed = function* () {
-  var feedSource = this.request.query.source
+  let feedSource = this.request.query.source
     , feed
     , bodyParsed = [];
 
   if(feedSource && feedsDB[feedSource]) {
 
+    // I create my own thunk :)
+    function myRequest(url) {
+      return function (cb) {
+        request(url, function(error, response, body) {
+          if (response.statusCode === 200) {
+            cb(error, body);
+          } else {
+            cb(new Error("The URL didn't respond appropriately"), null);
+          }
+        });
+      };
+    }
+
     try {
-      feed = yield request(feedsDB[feedSource]);
+      feed = yield myRequest(feedsDB[feedSource]);
     } catch (err){
       console.log("*Error*> " + err.message);
       throw err;
     }
 
-    if(feed.statusCode === 200) {
-      console.log("Todo bien: " + feed.body.substring(0,40));
+    if(feed) {
+      console.log("Todo bien: " + feed.substring(0,40));
 
-      // Convierto el objeto response devuelto por request() en un stream, que es lo que necesita feedParser.
-      // koa-feedparser puede tomar como entrada una URL, pero no gestiona bien los errores en caso de que, por ejemplo, la URL no exista
-      var stream = new Readable();
-      stream.push(feed.body);
+      // Convierto el objeto response devuelto por request() en un stream, que es lo que necesita koa-feedParser.
+      // koa-feedparser puede tomar como entrada una URL, pero no gestiona bien los errores en caso de que, por ejemplo, la URL no exista.
+      let stream = new Readable();
+      stream.push(feed);
       stream.push(null);
 
-      var meta = yield feedParser(stream);
-      var articles = meta.articles;
+      let meta = yield feedParser(stream);
+      let articles = meta.articles;
 
       for (let item of articles) {
         bodyParsed.push({"url": item.guid, "title": item.title});
