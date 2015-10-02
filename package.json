@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "bunyan": "^1.5.1",
     "co-feedparser": "^0.16.5",
     "co-monk": "^1.0.0",
     "koa": "^1.0.0",

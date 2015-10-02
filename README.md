@@ -6,11 +6,13 @@ Installation and execution instructions:
 Installation:
 
     $ npm install
+    $ npm install -g gulp
+    $ npm install -g bunyan
 
 Execution:
 
-    $ iojs app
+    $ iojs app | bunyan
     
-Test (install globally 'gulp'):
+Test:
 
     $gulp --harmony test

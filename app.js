@@ -7,8 +7,10 @@ var limit = require("koa-better-ratelimit");
 var compress = require("koa-compress");
 var router = require("koa-router");
 var api = require("./api/api.js");
+var bunyan = require("bunyan");
 
 var app = koa();
+var log = bunyan.createLogger({name:"feedMind", level:"debug"});
 
 var compressOpts = {
   filter: function(content_type) {
@@ -18,9 +20,9 @@ var compressOpts = {
 }
 
 var routerAPIv1 = new router();
-routerAPIv1.get("/all", api.all);
-routerAPIv1.get("/single", api.single);
 routerAPIv1.get("/feed", api.feed);
+//routerAPIv1.get("/all", api.all);
+//routerAPIv1.get("/single", api.single);
 
 // Middleware for catch all errors
 app.use(function *(next) {
@@ -29,15 +31,17 @@ app.use(function *(next) {
 
     if(this.status !== 200) {
       this.body = {"error": "Something very wrong happens here :/ " +  this.status};
+      log.error(this.body);
     }
 
   } catch (err) {
     this.type = "json";
     this.status = err.status || 500;
     this.body = {"error" : err.message};
+    log.error(this.body);
 
-    //NOTE "emit" emite una señal que puede ser recogida por un manejador (handler) ".on('error',...)
-    this.app.emit("error", err, this);
+    //NOTE "emit" emite una señal que puede ser recogida por un manejador (handler) ".on('error',...) o en este punto, mandado a consola.
+    //this.app.emit("error", err, this);
   }
 });
 
@@ -58,4 +62,4 @@ app.use(mount("/v1", routerAPIv1.middleware()));
 module.exports = app;
 
 if(!module.parent) app.listen(3000);
-console.log("**feedMind** is running on http://localhost:3000. Enjoy using my API.");
+log.info("**feedMind** is running on http://localhost:3000. Enjoy using my API.");
