@@ -56,7 +56,7 @@ exports.feed = function* () {
       return function (cb) {
         request(url, function(error, response, body) {
           if (response.statusCode === 200) {
-            cb(error, body);
+            cb(null, body);
           } else {
             cb(new Error("The URL didn't respond appropriately"), null);
           }
@@ -84,7 +84,7 @@ exports.feed = function* () {
       let articles = meta.articles;
 
       for (let item of articles) {
-        bodyParsed.push({"url": item.guid, "title": item.title});
+        bodyParsed.push({url: item.guid, title: item.title});
       }
 
       this.body = bodyParsed;
