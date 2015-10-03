@@ -7,7 +7,7 @@ var limit = require("koa-better-ratelimit");
 var compress = require("koa-compress");
 var router = require("koa-router");
 var api = require("./api/api.js");
-var log = require("./logger.js");
+var log = require("./helper/logger.js");
 
 var app = koa();
 
@@ -62,3 +62,4 @@ module.exports = app;
 
 if(!module.parent) app.listen(3000);
 log.info("**feedMind** is running on http://localhost:3000. Enjoy using my API.");
+console.log("NODE_ENV: " + process.env["NODE_ENV"]);

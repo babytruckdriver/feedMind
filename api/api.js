@@ -6,7 +6,7 @@ var feedParser = require("co-feedparser");
 //var request = require("koa-request");
 var request = require("request");
 var Readable = require("stream").Readable;
-var log = require("../logger.js");
+var log = require("../helper/logger.js");
 
 //var db = monk("localhost/mydb");
 //var words = wrap(db.get("words"));
