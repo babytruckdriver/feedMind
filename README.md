@@ -8,10 +8,11 @@ Installation:
     $ npm install
     $ npm install -g gulp
     $ npm install -g bunyan
+    $ npm install -g node-dev
 
 Execution:
 
-    $ iojs app | bunyan
+    $ node-dev --harmony app NODE_ENV=development | bunyan
     
 Test:
 

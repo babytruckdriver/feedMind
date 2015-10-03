@@ -6,11 +6,7 @@ var feedParser = require("co-feedparser");
 //var request = require("koa-request");
 var request = require("request");
 var Readable = require("stream").Readable;
-var bunyan = require("bunyan");
-
-
-// Logger configuration
-var log = bunyan.createLogger({name:"feedMind", level:"debug"});
+var log = require("../logger.js");
 
 //var db = monk("localhost/mydb");
 //var words = wrap(db.get("words"));

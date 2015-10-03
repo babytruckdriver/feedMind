@@ -6,4 +6,4 @@ gulp.task("test", function() {
     .pipe(mocha({reporter: "nyan"})); //reporters: dot, spec, tap, list, progress, json, HTMLCov, Doc...
 });
 
-// NOTE Execute this with "gulp --harmony test"
+// TODO: Automatizar la instalación con gulp

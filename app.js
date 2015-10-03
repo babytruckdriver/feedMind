@@ -7,10 +7,9 @@ var limit = require("koa-better-ratelimit");
 var compress = require("koa-compress");
 var router = require("koa-router");
 var api = require("./api/api.js");
-var bunyan = require("bunyan");
+var log = require("./logger.js");
 
 var app = koa();
-var log = bunyan.createLogger({name:"feedMind", level:"debug"});
 
 var compressOpts = {
   filter: function(content_type) {
