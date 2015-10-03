@@ -42,7 +42,7 @@ var log = require("../helper/logger.js");
 
 var feedsDB = {
   tutsplus: "http://codeX.tutsplus.com/categories/javascript.atom",
-  echojs: "http://www.echojs.com/rss"
+  echojs: "http://www.echojs.com/rssx"
 }
 
 exports.feed = function* () {
@@ -52,14 +52,14 @@ exports.feed = function* () {
 
   if(feedSource && feedsDB[feedSource]) {
 
-    // I create my own thunk :)
+    // NOTE: I create my own thunk :) just for practice
     function myRequest(url) {
       return function (cb) {
-        request(url, function(error, response, body) {
-          if (response.statusCode === 200) {
+        request(url, function(err, res, body) {
+          if (res && res.statusCode === 200) {
             cb(null, body);
           } else {
-            cb(new Error("The URL didn't respond appropriately"), null);
+            cb(err, null);
           }
         });
       };

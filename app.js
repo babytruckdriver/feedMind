@@ -61,5 +61,4 @@ app.use(mount("/v1", routerAPIv1.middleware()));
 module.exports = app;
 
 if(!module.parent) app.listen(3000);
-log.info("**feedMind** is running on http://localhost:3000. Enjoy using my API.");
-console.log("NODE_ENV: " + process.env["NODE_ENV"]);
+log.info("**feedMind** is running on http://localhost:3000. Enjoy using my API. [" + process.env["NODE_ENV"] + "]");
