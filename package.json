@@ -23,3 +23,5 @@
     "supertest": "^1.1.0"
   }
 }
+
+// NOTE: las dependencias 'devDependencies' se instalan con 'npm' con el flag '--save-dev'. El resto con el flag '--save'

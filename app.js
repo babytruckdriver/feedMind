@@ -9,6 +9,9 @@ var router = require("koa-router");
 var api = require("./api/api.js");
 var log = require("./helper/logger.js");
 
+// Environment
+var env = process.env.NODE_ENV || 'development';
+
 var app = koa();
 
 var compressOpts = {
@@ -23,8 +26,11 @@ routerAPIv1.get("/feed", api.feed);
 //routerAPIv1.get("/all", api.all);
 //routerAPIv1.get("/single", api.single);
 
+// Middleware for add logging capabilities. Ej: <-- GET /v1/single?word=od 200 339ms 40b
+if("development" === env) app.use(logger());
+
 // Middleware for catch all errors
-app.use(function *(next) {
+app.use(function *handleRes(next) {
   try{
     yield next;
 
@@ -39,7 +45,7 @@ app.use(function *(next) {
     this.body = {"error" : err.message};
     log.error(this.body);
 
-    //NOTE "emit" emite una señal que puede ser recogida por un manejador (handler) ".on('error',...) o en este punto, mandado a consola.
+    //NOTE "emit" emite una señal que puede ser recogida por un manejador (handler) "app.on('error',...) o en este punto, mandado a consola.
     //this.app.emit("error", err, this);
   }
 });
@@ -47,9 +53,6 @@ app.use(function *(next) {
 // Middleware for limmit the number of requests from a given user (10 in 3 minuts)
 app.use(limit({duration: 1000*60*3, //3 mins
                max: 10, balcklist: []}));
-
-// Middleware for add logging capabilities. Ej: <-- GET /v1/single?word=od 200 339ms 40b
-app.use(logger());
 
 // Middleware for compress the responses
 app.use(compress(compressOpts));

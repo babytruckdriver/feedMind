@@ -12,7 +12,7 @@ Installation:
 
 Execution:
 
-    $ NODE_ENV=development node-dev --harmony app  | bunyan
+    $ NODE_ENV=development DEBUG=koa* node-dev --harmony app | bunyan
     
 Test:
 

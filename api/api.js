@@ -42,7 +42,8 @@ var log = require("../helper/logger.js");
 
 var feedsDB = {
   tutsplus: "http://codeX.tutsplus.com/categories/javascript.atom",
-  echojs: "http://www.echojs.com/rssx"
+  echojs: "http://www.echojs.com/rss",
+  barrapunto: "http://barrapunto.com/index.rss"
 }
 
 exports.feed = function* () {
@@ -53,6 +54,7 @@ exports.feed = function* () {
   if(feedSource && feedsDB[feedSource]) {
 
     // NOTE: I create my own thunk :) just for practice
+    // Koa convert this in an Promise
     function myRequest(url) {
       return function (cb) {
         request(url, function(err, res, body) {
@@ -72,7 +74,7 @@ exports.feed = function* () {
     }
 
     if(feed) {
-      log.debug("Todo bien; " + feed.substring(0, 30));
+      log.debug("Everything seems ok: " + feed.substring(0, 30));
 
       // Convierto el objeto response devuelto por request() en un stream, que es lo que necesita koa-feedParser.
       // koa-feedparser puede tomar como entrada una URL, pero no gestiona bien los errores en caso de que, por ejemplo, la URL no exista.
