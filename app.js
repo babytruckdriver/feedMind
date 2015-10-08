@@ -5,32 +5,34 @@ var mount = require("koa-mount");
 var logger = require("koa-logger");
 var limit = require("koa-better-ratelimit");
 var compress = require("koa-compress");
-var router = require("koa-router");
+var Router = require("koa-router");
 var api = require("./api/api.js");
 var log = require("./helper/logger.js");
 
 // Environment
-var env = process.env.NODE_ENV || 'development';
+var env = process.env.NODE_ENV || "development";
 
 var app = koa();
 
 var compressOpts = {
-  filter: function(content_type) {
-    return /text/i.test(content_type); // what things compress
+  filter: function(contentType) {
+    return /text/i.test(contentType); // what things compress
   },
   threshold: 0.2 // minimum size to compress (in kb)
-}
+};
 
-var routerAPIv1 = new router();
+var routerAPIv1 = new Router();
 routerAPIv1.get("/feed", api.feed);
 //routerAPIv1.get("/all", api.all);
 //routerAPIv1.get("/single", api.single);
 
 // Middleware for add logging capabilities. Ej: <-- GET /v1/single?word=od 200 339ms 40b
-if("development" === env) app.use(logger());
+if(env === "development") {
+  app.use(logger());
+}
 
 // Middleware for catch all errors
-app.use(function *handleRes(next) {
+app.use(function* handleRes(next) {
   try{
     yield next;
 
@@ -42,7 +44,7 @@ app.use(function *handleRes(next) {
   } catch (err) {
     this.type = "json";
     this.status = err.status || 500;
-    this.body = {"error" : err.message};
+    this.body = {"error": err.message};
     log.error(this.body);
 
     //NOTE "emit" emite una señal que puede ser recogida por un manejador (handler) "app.on('error',...) o en este punto, mandado a consola.
@@ -51,7 +53,7 @@ app.use(function *handleRes(next) {
 });
 
 // Middleware for limmit the number of requests from a given user (10 in 3 minuts)
-app.use(limit({duration: 1000*60*3, //3 mins
+app.use(limit({duration: 1000 * 60 * 3, //3 mins
                max: 10, balcklist: []}));
 
 // Middleware for compress the responses
@@ -63,5 +65,7 @@ app.use(mount("/v1", routerAPIv1.middleware()));
 // This exports is for the mocha tests
 module.exports = app;
 
-if(!module.parent) app.listen(3000);
-log.info("**feedMind** is running on http://localhost:3000. Enjoy using my API. [" + process.env["NODE_ENV"] + "]");
+if(!module.parent) {
+  app.listen(3000);
+}
+log.info("**feedMind** is running on http://localhost:3000. Enjoy using my API. [" + process.env.NODE_ENV + "]");

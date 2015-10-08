@@ -44,18 +44,18 @@ var feedsDB = {
   tutsplus: "http://codeX.tutsplus.com/categories/javascript.atom",
   echojs: "http://www.echojs.com/rss",
   barrapunto: "http://barrapunto.com/index.rss"
-}
+};
 
 exports.feed = function* () {
-  let feedSource = this.request.query.source
-    , feed
-    , bodyParsed = [];
+  let feedSource = this.request.query.source,
+      feed,
+      bodyParsed = [];
 
   if(feedSource && feedsDB[feedSource]) {
 
     // NOTE: I create my own thunk :) just for practice
     // Koa convert this in an Promise
-    function myRequest(url) {
+    var myRequest = function (url) {
       return function (cb) {
         request(url, function(err, res, body) {
           if (res && res.statusCode === 200) {
@@ -65,7 +65,7 @@ exports.feed = function* () {
           }
         });
       };
-    }
+    };
 
     try {
       feed = yield myRequest(feedsDB[feedSource]);
