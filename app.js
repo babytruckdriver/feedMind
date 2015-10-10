@@ -23,8 +23,6 @@ var compressOpts = {
 
 var routerAPIv1 = new Router();
 routerAPIv1.get("/feed", api.feed);
-//routerAPIv1.get("/all", api.all);
-//routerAPIv1.get("/single", api.single);
 
 // Middleware for add logging capabilities. Ej: <-- GET /v1/single?word=od 200 339ms 40b
 if(env === "development") {

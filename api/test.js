@@ -1,3 +1,5 @@
+"use strict";
+
 var request = require("supertest");
 var api = require("../app.js");
 
