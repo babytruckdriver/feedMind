@@ -6,11 +6,9 @@ var logger = require("koa-logger");
 var limit = require("koa-better-ratelimit");
 var compress = require("koa-compress");
 var Router = require("koa-router");
-var api = require("./api/api.js");
-var log = require("./helper/logger.js");
-
-// Environment
-var env = process.env.NODE_ENV || "development";
+var api = require("./api/api");
+var log = require("./helper/logger");
+var serve = require("koa-static");
 
 var app = koa();
 
@@ -25,7 +23,7 @@ var routerAPIv1 = new Router();
 routerAPIv1.get("/feed", api.feed);
 
 // Middleware for add logging capabilities. Ej: <-- GET /v1/single?word=od 200 339ms 40b
-if(env === "development") {
+if(app.env === "development") {
   app.use(logger());
 }
 
@@ -56,6 +54,9 @@ app.use(limit({duration: 1000 * 60 * 3, //3 mins
 
 // Middleware for compress the responses
 app.use(compress(compressOpts));
+
+// Middleware for set public access to a server folder (for static code)
+app.use(serve(__dirname + "/views"));
 
 // Middleware for handle the request and generate a response
 app.use(mount("/v1", routerAPIv1.middleware()));
