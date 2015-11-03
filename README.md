@@ -19,3 +19,7 @@ Execution:
 Test:
 
     $gulp --harmony test
+
+Lint:
+    
+    $gulp --harmony lint
