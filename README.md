@@ -9,6 +9,8 @@ Installation:
     $ npm install -g gulp
     $ npm install -g bunyan
     $ npm install -g node-dev
+    
+    To install dependencies in the 'devDependencies' section of the 'package.json' you have to execute 'npm' with flag '--save-dev'. Rest with flag '--save'
 
 Execution:
 
