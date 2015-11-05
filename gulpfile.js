@@ -14,4 +14,9 @@ gulp.task("lint", function () {
         .pipe(eslint.failOnError());
 });
 
-// TODO: Automatizar la instalación con gulp
+gulp.task("watch", function () {
+    gulp.watch("./**/*.js", ["lint"]);
+    gulp.watch("api/api.js", ["test"]);
+});
+
+gulp.task("default", ["lint", "test"]);
